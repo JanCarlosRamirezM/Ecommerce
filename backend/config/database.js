@@ -9,9 +9,6 @@ const connectDataBase = (DB_LOCAL_URI) => {
       console.log(
         `MongoDb Database connected with HOST ${con.connection.host}`
       );
-    })
-    .catch((err) => {
-      console.log(err);
     });
 };
 module.exports = connectDataBase;
