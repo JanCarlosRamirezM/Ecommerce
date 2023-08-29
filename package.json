@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node backend/server.js",
     "dev": "SET NODE_ENV=DEVELOPMENT& nodemon run backend/server.js",
-    "prod": "SET NODE_ENV=PRODUCTION& node backend/server.js"
+    "prod": "SET NODE_ENV=PRODUCTION& node backend/server.js",
+    "seeder": "node backend/seeder/index.js"
   },
   "repository": {
     "type": "git",
