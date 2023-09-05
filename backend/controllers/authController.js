@@ -7,7 +7,7 @@ const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
 // ----------------------------------------------
-// Create a new user => /api/v1/auth/register
+// Create a new user => /api/v1/register
 // ----------------------------------------------
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   const user = await User.create({
@@ -24,7 +24,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 // ----------------------------------------------
-// Login User => /api/v1/auth/login
+// Login User => /api/v1/login
 // ----------------------------------------------
 exports.loginUser = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
@@ -43,14 +43,14 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new ErrorHandler("Invalid email or password", httpStatus.UNAUTHORIZED)
+      new ErrorHandler("Invalid email or password", httpStatus.UNRIZED)
     );
   }
 
   const isPasswordMatched = await user.comparePassword(password);
   if (!isPasswordMatched) {
     return next(
-      new ErrorHandler("Invalid email or password", httpStatus.UNAUTHORIZED)
+      new ErrorHandler("Invalid email or password", httpStatus.UNRIZED)
     );
   }
 
@@ -58,7 +58,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 // ----------------------------------------------
-// Logout User => /api/v1/auth/logout
+// Logout User => /api/v1/logout
 // ----------------------------------------------
 exports.logoutUser = catchAsyncErrors(async (req, res, next) => {
   res.cookie("token", null, {
@@ -141,3 +141,124 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
   await user.save();
   sendToken(user, httpStatus.OK, res);
 });
+
+// ----------------------------------------------
+// Get currently logged in user details => /api/v1/me
+// ----------------------------------------------
+exports.getUserProfile = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  res.status(httpStatus.OK).json({
+    success: true,
+    user,
+  });
+});
+
+// ----------------------------------------------
+// Update / Change password => /api/v1/password/update
+// ----------------------------------------------
+exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select("+password");
+
+  const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
+  if (!isPasswordMatched) {
+    return next(
+      new ErrorHandler("Old password is incorrect", httpStatus.BAD_REQUEST)
+    );
+  }
+  if (req.body.newPassword !== req.body.confirmPassword) {
+    return next(
+      new ErrorHandler("Password does not match", httpStatus.BAD_REQUEST)
+    );
+  }
+  user.password = req.body.newPassword;
+  await user.save();
+  sendToken(user, httpStatus.OK, res);
+});
+
+// ----------------------------------------------
+// Update user profile => /api/v1/me/update
+// ----------------------------------------------
+exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+  };
+  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  }).select("+password");
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  res.status(httpStatus.OK).json({
+    success: true,
+    user,
+  });
+});
+
+// ----------------------------------------------
+// Get all users => /api/v1/admin/users
+// ----------------------------------------------
+exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
+  const users = await User.find();
+  res.status(httpStatus.OK).json({
+    success: true,
+    users,
+  });
+});
+
+// ----------------------------------------------
+// Get single user details => /api/v1/admin/user/:id
+// ----------------------------------------------
+exports.getSingleUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+  res.status(httpStatus.OK).json({
+    success: true,
+    user,
+  });
+});
+
+// ----------------------------------------------
+// Update user role => /api/v1/admin/user/:id
+// ----------------------------------------------
+exports.updateUserRole = catchAsyncErrors(async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+  };
+  const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  }).select("+password");
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+  res.status(httpStatus.OK).json({
+    success: true,
+    user,
+  });
+});
+
+// ----------------------------------------------
+// Delete user => /api/v1/admin/user/:id
+// ----------------------------------------------
+exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+  await user.remove();
+  res.status(httpStatus.OK).json({
+    success: true,
+  });
+});
+ 
