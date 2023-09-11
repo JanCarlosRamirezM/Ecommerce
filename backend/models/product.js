@@ -82,11 +82,11 @@ const productSchema = new mongoose.Schema(
           type: String,
           required: [true],
         },
-        // user: {
-        //   type: mongoose.Schema.ObjectId,
-        //   ref: "user",
-        //   required: [true],
-        // },
+        user: {
+          type: mongoose.Schema.ObjectId,
+          ref: "User",
+          required: [true],
+        },
       },
     ],
     user: {

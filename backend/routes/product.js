@@ -7,11 +7,21 @@ const {
   getSingleProduct,
   updateProduct,
   deleteProduct,
+  newReview,
+  getReviews,
+  deleteReview,
 } = require("../controllers/productController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
 
 router.route("/products").get(getProducts);
 router.route("/product/:id").get(getSingleProduct);
+
+// Review routes
+router.route("/review").post(isAuthenticatedUser, newReview);
+router
+  .route("/reviews")
+  .get(getReviews)
+  .delete(isAuthenticatedUser, deleteReview);
 
 // Admin routes
 router
