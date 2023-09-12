@@ -1,12 +1,14 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 export const Header = () => {
   return (
     <>
       <nav className="navbar row">
         <div className="col-12 col-md-3">
           <div className="navbar-brand">
-            <img src="./images/logo.png" alt="Logo" />
+            <Link to="/">
+              <img src="../images/logo.png" alt="Logo" className="img-fluid" />
+            </Link>
           </div>
         </div>
 

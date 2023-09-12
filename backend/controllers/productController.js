@@ -54,7 +54,7 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
 // Get all products => /api/v1/products
 // ---------------------------------------------
 exports.getProducts = catchAsyncErrors(async (req, res, next) => {
-  const productCount = await Product.countDocuments();
+  const productsCount = await Product.countDocuments();
   const ApiFeature = new ApiFeatures(Product.find(), req.query)
     .search()
     .filter()
@@ -66,8 +66,7 @@ exports.getProducts = catchAsyncErrors(async (req, res, next) => {
 
   return res.status(httpStatus.OK).json({
     success: true,
-    productCount,
-    count: products.length,
+    productsCount,
     products,
   });
 });

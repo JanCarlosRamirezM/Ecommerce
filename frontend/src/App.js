@@ -1,9 +1,9 @@
 import React from "react";
-import { Header } from "./components/layout/Header";
-import "./App.css";
-import { Footer } from "./components/layout/Footer";
-import { Home } from "./components/Home";
 import { Routes, Route } from "react-router-dom";
+import "./App.css";
+import { Header, Footer } from "./components/layout";
+import { Home } from "./components/Home";
+import { ProductDetails } from "./components/product";
 
 const App = () => {
   return (
@@ -12,6 +12,7 @@ const App = () => {
       <div className="container container-fluid">
         <Routes>
           <Route path="/" element={<Home />} exact />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
       </div>
       <Footer />
