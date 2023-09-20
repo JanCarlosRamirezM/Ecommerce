@@ -13,13 +13,26 @@ import axios from "axios";
 //------------------------------
 // Get All Products
 //------------------------------
-export const getProducts = () => async (dispatch) => {
+export const getProducts = (
+  productsCountPerPage = 8,
+  currentPage = 1,
+  keyword = "",
+  price,
+  category = [],
+  rating
+) => async (dispatch) => {
   try {
     dispatch({
       type: ALL_PRODUCTS_REQUEST,
     });
 
-    const { data } = await axios.get("/api/v1/products");
+    let url = `/api/v1/products?limit=${productsCountPerPage}&page=${currentPage}&keyword=${keyword}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${rating}`;
+
+    if (category.length > 0) {
+      url += `&category=${category}`;
+    }
+
+    const { data } = await axios.get(url);
 
     dispatch({
       type: ALL_PRODUCTS_SUCCESS,
