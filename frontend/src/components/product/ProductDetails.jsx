@@ -9,7 +9,7 @@ export const ProductDetails = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const { loading, error, product } = useSelector(
+  const { loading, product } = useSelector(
     (state) => state.produtDetails
   );
 
