@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import { positions, transitions, Provider as AlertProvider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
 
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const options = {
   position: positions.BOTTOM_CENTER,

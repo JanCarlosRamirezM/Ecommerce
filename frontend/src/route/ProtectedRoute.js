@@ -5,5 +5,10 @@ import { Outlet, Navigate } from "react-router-dom";
 export const ProtectedRoute = () => {
   const { isAuthenticated, loading } = useSelector((state) => state.auth);
 
-  return !loading && isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+  return (
+    <>
+      {loading === false &&
+        (isAuthenticated ? <Outlet /> : <Navigate to="/login" />)}
+    </>
+  );
 };

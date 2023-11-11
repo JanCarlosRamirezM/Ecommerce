@@ -10,6 +10,7 @@ import { Register } from "./components/user/Register";
 import { loadUser } from "./actions/userAction";
 import { Profile } from "./components/user/Profile";
 import { ProtectedRoute } from "./route/ProtectedRoute";
+import { UpdateProfile } from "./components/user/UpdateProfile";
 
 const App = () => {
   useEffect(() => {
@@ -30,6 +31,7 @@ const App = () => {
 
           <Route exact path="/" element={<ProtectedRoute />}>
             <Route path="/me" element={<Profile />} />
+            <Route path="/me/update" element={<UpdateProfile />} />
           </Route>
         </Routes>
       </div>
